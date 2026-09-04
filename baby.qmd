@@ -1,0 +1,40 @@
+---
+title: "Baby Names"
+format: html
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+```
+
+```{r}
+#| label: load-data
+files <- fs::dir_ls("data", glob = "*yob*.txt")
+baby_names <- read_csv(files, id = "file", col_names = c("name", "sex", "count")) |>
+  mutate(year = parse_number(basename(file)))
+```
+
+```{r}
+#| label: javier-trend
+javier <- baby_names |>
+  filter(name == "Javier", sex == "M") |>
+  filter(year >= max(year) - 99)
+
+ggplot(javier, aes(x = year, y = count)) +
+  geom_line() +
+  labs(
+    title = "Popularity of the Name Javier (Past 100 Years)",
+    x = "Year",
+    y = "Number of Babies",
+    caption = "Source: Social Security Administration"
+  ) +
+  scale_x_continuous(breaks = scales::pretty_breaks()) +
+  theme_minimal()
+```
+
+Over the last 100 years (1926–2025), the name Javier grew steadily from under 20 births per year in the late 1920s to a peak of 2,637 in 2001, before declining to 1,252 in 2025.

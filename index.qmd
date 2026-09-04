@@ -1,0 +1,94 @@
+---
+title: "The Story of Javier"
+subtitle: "Over a Century of Baby Name Trends in the United States"
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(plotly)
+```
+
+```{r}
+#| label: load-data
+files <- fs::dir_ls("data", glob = "*yob*.txt")
+baby_names <- read_csv(files, id = "file", col_names = c("name", "sex", "count")) |>
+  mutate(year = parse_number(basename(file)))
+
+javier <- baby_names |>
+  filter(name == "Javier", sex == "M")
+```
+
+## Overview
+
+The name **Javier** (the Spanish equivalent of Xavier, derived from the Basque name *Xabier*) has a rich history in the United States. Over the past century, more than **108,000** boys have been registered with the name in Social Security records.
+
+::: {.callout-note appearance="simple"}
+### Quick Facts at a Glance
+- **First Recorded Appearance:** 1917 (5 babies)
+- **Peak Year:** 2001 (2,637 babies)
+- **Most Recent Year (2025):** 1,252 babies
+- **Total Registered:** 108,463 babies
+:::
+
+## Interactive Trend (1917–2025)
+
+Hover over the line to explore exact birth figures for any given year:
+
+```{r}
+#| label: javier-plot
+p <- ggplot(javier, aes(x = year, y = count, group = 1, text = paste0("Year: ", year, "<br>Births: ", scales::comma(count)))) +
+  geom_line(color = "#2c3e50", linewidth = 0.8) +
+  geom_point(data = filter(javier, year == 2001), aes(x = year, y = count, group = 1), color = "#e74c3c", size = 2.5) +
+  annotate("text", x = 2001, y = 2750, label = "Peak: 2001 (2,637)", color = "#e74c3c", fontface = "bold", size = 3.5) +
+  labs(
+    x = "Year",
+    y = "Number of Births",
+    caption = "Source: Social Security Administration"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  theme_minimal(base_size = 13)
+
+ggplotly(p, tooltip = "text")
+```
+
+## Historical Insights
+
+- **The Early Years (1917–1950s):** Javier was relatively rare in official U.S. records, averaging under 100 births annually.
+- **The Rapid Rise (1960s–1990s):** Reflecting demographic growth and greater cultural representation, the name saw steady growth, crossing 1,000 births per year by the mid-1970s and 2,000 by 1990.
+- **The Peak (2001):** The name reached its highest popularity in 2001 with 2,637 births.
+- **Recent Decades (2010s–2025):** Popularity has stabilized around 1,200 to 1,500 births annually, remaining an enduring favorite.
+
+## Comparison: Javier vs. Micheal
+
+How does Javier compare to **Micheal** over the past century?
+
+```{r}
+#| label: comparison-plot
+comparison <- baby_names |>
+  filter(name %in% c("Javier", "Micheal"), sex == "M")
+
+p_comp <- ggplot(comparison, aes(x = year, y = count, color = name, group = name, text = paste0("Name: ", name, "<br>Year: ", year, "<br>Births: ", scales::comma(count)))) +
+  geom_line(linewidth = 0.9) +
+  labs(
+    x = "Year",
+    y = "Number of Births",
+    color = "Name",
+    caption = "Source: Social Security Administration"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  scale_color_manual(values = c("Javier" = "#2c3e50", "Micheal" = "#e67e22")) +
+  theme_minimal(base_size = 13)
+
+ggplotly(p_comp, tooltip = "text")
+```
+
+- **Micheal** peaked in **1957** with 4,831 births alongside the mid-century surge of the name Michael, but has since steadily declined.
+- **Javier** surpassed Micheal around 1987 and has remained more popular ever since.
+- In **2025**, there were **1,252** boys named Javier compared to **130** named Micheal.

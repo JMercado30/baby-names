@@ -1,0 +1,17 @@
+---
+title: "About"
+---
+
+### About This Project
+
+This site explores trends in the popularity of the name **Javier** over more than a century of United States history.
+
+### Data Source
+
+All data is sourced from the [United States Social Security Administration (SSA)](https://www.ssa.gov/oact/babynames/limits.html) baby names dataset, which includes all names with at least 5 occurrences in a given year.
+
+### Tools Used
+
+- **[R](https://www.r-project.org/)** and **[tidyverse](https://www.tidyverse.org/)** for data loading and wrangling
+- **[ggplot2](https://ggplot2.tidyverse.org/)** and **[plotly](https://plotly.com/r/)** for interactive visualization
+- **[Quarto](https://quarto.org/)** for generating the static website
